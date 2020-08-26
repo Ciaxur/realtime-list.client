@@ -1,10 +1,13 @@
 // React Libraries
 import React from 'react';
 import { IItemData } from '.';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+
 
 
 interface IProp {
-  onSubmit: (data: Partial<IItemData>) => void,
+  onSubmit: (data: Partial<IItemData> | null) => void,
 };
 interface IState {
   itemName:     string,
@@ -39,7 +42,10 @@ class ItemInput extends React.Component<IProp, IState> {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  private onSubmit(event: React.FormEvent) {
+  private onSubmit(event: React.FormEvent | null) {
+    // No Data Given (Exit)
+    if (!event) return this.props.onSubmit(null);
+    
     event.preventDefault();
 
     // Destructure Used Data
@@ -84,6 +90,10 @@ class ItemInput extends React.Component<IProp, IState> {
   render() {
     return (
       <div className='item-container'>
+
+        {/* Div Padding */}
+        <div style={{ width: 100 }} />
+        
         <form name='add-item' onSubmit={this.onSubmit} className='form-item-container'>
           <input ref={this.nameInput} type="text" id="item-name" className='item-input' placeholder='Name' 
             onChange={text => this.setState({ itemName: text.target.value })} 
@@ -102,6 +112,17 @@ class ItemInput extends React.Component<IProp, IState> {
           <button type="submit" className="item-input-button">Submit</button>
           {this.state.errorMessage && <p className='input-error-text'>{this.state.errorMessage}</p>}
         </form>
+
+
+        {/* Side Tab: Close */}
+        <div style={{ width: 100 }}>
+          <FontAwesomeIcon 
+            style={{ fontSize: '2rem', cursor: 'pointer' }} 
+            icon={faSignOutAlt} 
+            onClick={() => this.onSubmit(null)} 
+          />
+        </div>
+        
       </div>
     )
   }

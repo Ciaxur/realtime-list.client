@@ -66,6 +66,8 @@
 
 .item-info-count {
   color: #E74C3C;
+  align-self: center;
+  margin: 10px;
 }
 
 .item-info-mute {

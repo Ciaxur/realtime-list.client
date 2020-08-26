@@ -43,6 +43,8 @@ class App extends React.Component<IProp, IState> {
 
     // Bind Member Functions
     this.submitItemAdd = this.submitItemAdd.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.updateItem = this.updateItem.bind(this);
   }
 
   componentDidMount() {
@@ -59,27 +61,47 @@ class App extends React.Component<IProp, IState> {
           .catch(err => console.log(err));
       });
 
+      // SOCKET: Error Messages
+      socket?.on('error', (err: any) => {
+        console.log('Socket Error Message:', err);
+      })
+
       // SOCKET: New Item Added
       socket?.on('new-item', (item: IItemData) => {
         const itemList = this.state.itemList;
         itemList.push(item);
         this.setState({ itemList });
       });
+
+      // SOCKET: Item Removed
+      socket?.on('remove-item', (item: IItemData) => {
+        const itemList = this.state.itemList.filter(val => val._id !== item._id);
+        this.setState({ itemList });
+      })
       
     });
   }
 
-  private submitItemAdd(item: Partial<IItemData>) {
-    // Emit to Socket to Add to DB
-    this.state.socket?.emit('item-add', JSON.stringify(item));
-
-    // Add to Client
-    const itemList = this.state.itemList;
-    itemList.push({ ...item, _id: String(itemList.length) } as any);
+  // Submit Item Listing to Server
+  private submitItemAdd(item: Partial<IItemData> | null) {
+    // Added Item
+    if(item) {
+      // Emit to Socket to Add to DB
+      this.state.socket?.emit('item-add', item);
+    }
 
     // Go Home & Update Data
-    this.setState({ redirect: '/', itemList, });
+    this.setState({ redirect: '/' });
   }
+
+  // Remove Item Listing from Server
+  private deleteItem(item: IItemData) {
+    this.state.socket?.emit('item-del', item);
+  }
+
+  // TODO:
+  // Update Item Listing on Server
+  private updateItem(item: IItemData) {}
   
   render() {
     const { itemList } = this.state;
@@ -97,7 +119,11 @@ class App extends React.Component<IProp, IState> {
             <Route exact path='/'>
               {/* DISPLAY: List of Data */}
               {itemList.map((val, index) =>
-                <Item key={index} item={val} />
+                <Item 
+                  key={index} 
+                  item={val} 
+                  onDelete={this.deleteItem}
+                />
               )}
 
               {/* Add Button */}
