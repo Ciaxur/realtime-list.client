@@ -58,7 +58,7 @@ class App extends React.Component<IProp, IState> {
 
   componentDidMount() {
     // Connect Socket and Attach Listeners
-    this.setState({ socket: io(`ws://${config.SERVER_IP}`) }, () => {
+    this.setState({ socket: io(`wss://${config.SERVER_IP}`) }, () => {
       const { socket } = this.state;
 
       // SOCKET CONNECT
