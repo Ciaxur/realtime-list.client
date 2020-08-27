@@ -158,7 +158,7 @@ class App extends React.Component<IProp, IState> {
             <Route exact path='/'>
               {/* DISPLAY: No List Data */}
               {!itemList.length && 
-                <h3>No Items...</h3>
+                <h3 style={{ color: '#d35400' }}>No Items...</h3>
               }
               
               {/* DISPLAY: List of Data */}
