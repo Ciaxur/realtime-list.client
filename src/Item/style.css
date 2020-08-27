@@ -1,7 +1,7 @@
 .item-container {
-  background-color: #2C3E50;
+  background-color: #2980b9;
   border-radius: 10px;
-  width: 50vw;
+  width: 80vw;
 
   display: flex;
   justify-content: space-between;
@@ -11,10 +11,15 @@
 }
 
 .form-item-container { 
-  width: 100rem;
+  width: 200rem;
   align-items: center;
   display: flex;
   flex-direction: column;
+}
+
+.form-item-padding {
+  width: 100%;
+  text-align: right;
 }
 
 .input-error,
@@ -25,12 +30,12 @@
 .input-error-text {
   color: red;
   font-size: 12px;
-  margin: 0;
+  margin: 1.2em 0em 0em 0em;
 }
 
 .item-input {
-  width: 60%;
-  height: 1.2rem;
+  width: 90%;
+  height: 1rem;
   text-align: center;
 }
 
@@ -42,7 +47,7 @@
 .item-input-button {
   width: 10rem;
   height: 2rem;
-  margin: 1rem;
+  margin: 1.2rem;
   
   font-size: 21px;
 }
@@ -65,13 +70,14 @@
 }
 
 .item-info-count {
-  color: #E74C3C;
+  color: #d35400;
+  font-size: 24px;
   align-self: center;
-  margin: 10px;
+  margin: 0em 1em;
 }
 
 .item-info-mute {
   font-size: large;
-  color: grey;
+  color: #95a5a6;
   margin-left: 1rem;
 }

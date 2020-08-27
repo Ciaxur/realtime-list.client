@@ -1,5 +1,16 @@
+/* Global Overrides */
+body {
+  font-family: sans-serif;
+}
+
+h3 {
+  font-size: 32px;
+}
+
+
+/* Global Styles */
 .container {
-  background-color: #282c34;
+  background-color: #ecf0f1;
   min-height: 100vh;
 
   display: flex;

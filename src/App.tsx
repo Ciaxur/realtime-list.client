@@ -7,6 +7,9 @@ import {
   Redirect
 } from "react-router-dom";
 
+// Styling Libraries
+import { Button } from '@material-ui/core';
+
 // Axios & Socket Library
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -170,7 +173,10 @@ class App extends React.Component<IProp, IState> {
 
               {/* Add Button */}
               <div className='app-add-item-button'>
-                <button onClick={() => this.setState({ redirect: '/add-item' })}>Add Item</button>
+                <Button 
+                  variant='contained'
+                  color='primary'
+                  onClick={() => this.setState({ redirect: '/add-item' })}>Add Item</Button>
               </div>
             </Route>
 

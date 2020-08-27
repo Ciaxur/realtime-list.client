@@ -4,6 +4,8 @@
 
 ❗️ **This Project is NOT Production Ready!** ❗️
 
+The Server Application of this project is on here [GitHub Repo](https://github.com/Ciaxur/realtime-list.server).
+
 ## Build and Run 🚀
 ```sh
 # Install Dependencies

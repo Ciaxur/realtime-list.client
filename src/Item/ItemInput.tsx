@@ -3,7 +3,8 @@ import React from 'react';
 import { IItemData } from '.';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
-
+import { Button } from '@material-ui/core';
+import './style.css';
 
 
 interface IProp {
@@ -53,10 +54,6 @@ class ItemInput extends React.Component<IProp, IState> {
       itemDesc: item.description || '',
       itemQuantity: item.count,
     });
-
-    // Focus on the Name Input
-    console.log(this.nameInput);
-    this.nameInput.current?.focus();
   }
 
   private onSubmit(event: React.FormEvent | null) {
@@ -107,12 +104,13 @@ class ItemInput extends React.Component<IProp, IState> {
   
   render() {
     const { itemDesc, itemQuantity, itemName } = this.state;
+    const { item } = this.props;
     
     return (
       <div className='item-container'>
 
         {/* Div Padding */}
-        <div style={{ width: 100 }} />
+        <div className='form-item-padding' />
         
         <form name='add-item' onSubmit={this.onSubmit} className='form-item-container'>
           <input ref={this.nameInput} type="text" id="item-name" className='item-input' placeholder='Name'
@@ -125,22 +123,27 @@ class ItemInput extends React.Component<IProp, IState> {
           />
 
           <span className='item-info-mute' style={{ color: 'white', marginTop: 2 }}>
-            Item Count:
+            <strong><small>Item Count:</small></strong>
             <input ref={this.quantityInput} type="number" id="item-count" className='item-count'
               onChange={text => this.setState({ itemQuantity: Number(text.target.value) })}
               value={itemQuantity}
             />
           </span>
 
-          <button type="submit" className="item-input-button">Submit</button>
+          <Button 
+            variant='contained' 
+            color='secondary' 
+            type="submit"
+            style={{ marginTop: 15 }}
+            >{!item ? 'Submit' : 'Modify'}</Button>
           {this.state.errorMessage && <p className='input-error-text'>{this.state.errorMessage}</p>}
         </form>
 
 
         {/* Side Tab: Close */}
-        <div style={{ width: 100 }}>
+        <div className='form-item-padding' >
           <FontAwesomeIcon 
-            style={{ fontSize: '2rem', cursor: 'pointer' }} 
+            style={{ fontSize: '1.5rem', cursor: 'pointer' }} 
             icon={faSignOutAlt} 
             onClick={() => this.onSubmit(null)} 
           />
