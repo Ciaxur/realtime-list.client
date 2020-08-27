@@ -27,10 +27,12 @@ interface IState {
   socket: SocketIOClient.Socket | null;
   itemList: IItemData[];
   redirect: string | null;
+
+  isItemEdit: boolean;        // State of Editing an Item
+  item: IItemData | null;     // Item being Pointed to for Action
 };
 
 class App extends React.Component<IProp, IState> {
-  
   constructor(props: IProp) {
     super(props);
 
@@ -39,12 +41,16 @@ class App extends React.Component<IProp, IState> {
       socket: null,
       itemList: [],
       redirect: null,
+
+      isItemEdit: false,
+      item: null,
     };
 
     // Bind Member Functions
     this.submitItemAdd = this.submitItemAdd.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.updateItem = this.updateItem.bind(this);
+    this.modifyItem = this.modifyItem.bind(this);
   }
 
   componentDidMount() {
@@ -58,13 +64,15 @@ class App extends React.Component<IProp, IState> {
         axios.get(`http://${config.SERVER_IP}/list`)
           .then(res => res.data)
           .then(data => this.setState({ itemList: data }))
-          .catch(err => console.log(err));
+          .catch(err => {
+            console.log('No List, ', err);
+          });
       });
 
       // SOCKET: Error Messages
       socket?.on('error', (err: any) => {
         console.log('Socket Error Message:', err);
-      })
+      });
 
       // SOCKET: New Item Added
       socket?.on('new-item', (item: IItemData) => {
@@ -77,12 +85,20 @@ class App extends React.Component<IProp, IState> {
       socket?.on('remove-item', (item: IItemData) => {
         const itemList = this.state.itemList.filter(val => val._id !== item._id);
         this.setState({ itemList });
+      });
+
+      // SOCKET: Item Updated
+      socket?.on('update-item', (item: IItemData) => {
+        // Update the new Item
+        const itemList = this.state.itemList
+          .map(val => val._id === item._id ? item : val);
+        this.setState({ itemList });
       })
       
     });
   }
 
-  // Submit Item Listing to Server
+  // SERVER: Submit Item Listing to Server
   private submitItemAdd(item: Partial<IItemData> | null) {
     // Added Item
     if(item) {
@@ -94,17 +110,37 @@ class App extends React.Component<IProp, IState> {
     this.setState({ redirect: '/' });
   }
 
-  // Remove Item Listing from Server
+  // SERVER: Remove Item Listing from Server
   private deleteItem(item: IItemData) {
     this.state.socket?.emit('item-del', item);
   }
 
-  // TODO:
-  // Update Item Listing on Server
-  private updateItem(item: IItemData) {}
+  // SERVER: Update Item Listing on Server
+  private updateItem(item: Partial<IItemData> | null) {
+    // Issue an Update to Server
+    this.state.socket?.emit('item-update', item);
+
+    // Redirect back to Home & Modify State
+    this.setState({
+      item: null,
+      isItemEdit: false,
+      redirect: '/',
+    });
+  }
+
+
+  // Sets up Modifying an Item
+  private modifyItem(item: IItemData) {
+    // Setup the State for Editing the Item
+    this.setState({
+      item,
+      isItemEdit: true,
+      redirect: '/edit-item',
+    });
+  }
   
   render() {
-    const { itemList } = this.state;
+    const { itemList, item } = this.state;
     
     return (
       <div className="container">
@@ -117,12 +153,18 @@ class App extends React.Component<IProp, IState> {
           {/* SWITCH: Different Routes to Take */}
           <Switch>
             <Route exact path='/'>
+              {/* DISPLAY: No List Data */}
+              {!itemList.length && 
+                <h3>No Items...</h3>
+              }
+              
               {/* DISPLAY: List of Data */}
               {itemList.map((val, index) =>
                 <Item 
                   key={index} 
                   item={val} 
                   onDelete={this.deleteItem}
+                  onModify={this.modifyItem}
                 />
               )}
 
@@ -134,6 +176,13 @@ class App extends React.Component<IProp, IState> {
 
             <Route path='/add-item'>
               <ItemInput onSubmit={this.submitItemAdd} />
+            </Route>
+
+            <Route path='/edit-item'>
+              { item && item._id
+                ? <ItemInput item={item} onSubmit={this.updateItem} />
+                : <h3>No Item Selected to Edit</h3>
+              }
             </Route>
 
           </Switch>

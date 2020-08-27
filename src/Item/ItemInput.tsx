@@ -8,6 +8,7 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 interface IProp {
   onSubmit: (data: Partial<IItemData> | null) => void,
+  item?: IItemData,       // Item Passed down
 };
 interface IState {
   itemName:     string,
@@ -40,6 +41,22 @@ class ItemInput extends React.Component<IProp, IState> {
     
     // Bind Member Functions
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  // Update the State to match passed in Props
+  componentDidMount() {
+    const { item } = this.props;
+    
+    if(!item) return;
+    this.setState({
+      itemName: item.name,
+      itemDesc: item.description || '',
+      itemQuantity: item.count,
+    });
+
+    // Focus on the Name Input
+    console.log(this.nameInput);
+    this.nameInput.current?.focus();
   }
 
   private onSubmit(event: React.FormEvent | null) {
@@ -81,6 +98,7 @@ class ItemInput extends React.Component<IProp, IState> {
 
     // Construct Final Result
     this.props.onSubmit({
+      _id: this.props.item?._id,
       name: itemName,
       count: itemQuantity,
       description: itemDesc,
@@ -88,6 +106,8 @@ class ItemInput extends React.Component<IProp, IState> {
   }
   
   render() {
+    const { itemDesc, itemQuantity, itemName } = this.state;
+    
     return (
       <div className='item-container'>
 
@@ -95,17 +115,20 @@ class ItemInput extends React.Component<IProp, IState> {
         <div style={{ width: 100 }} />
         
         <form name='add-item' onSubmit={this.onSubmit} className='form-item-container'>
-          <input ref={this.nameInput} type="text" id="item-name" className='item-input' placeholder='Name' 
-            onChange={text => this.setState({ itemName: text.target.value })} 
+          <input ref={this.nameInput} type="text" id="item-name" className='item-input' placeholder='Name'
+            onChange={text => this.setState({ itemName: text.target.value })}
+            value={itemName}
           />
-          <input ref={this.descInput} type="text" id="item-description" className='item-input' placeholder='Summary' 
-            onChange={text => this.setState({ itemDesc: text.target.value })} 
+          <input ref={this.descInput} type="text" id="item-description" className='item-input' placeholder='Summary'
+            onChange={text => this.setState({ itemDesc: text.target.value })}
+            value={itemDesc}
           />
 
           <span className='item-info-mute' style={{ color: 'white', marginTop: 2 }}>
-            Item Count: 
-            <input ref={this.quantityInput} type="number" id="item-count" className='item-count' 
-              onChange={text => this.setState({ itemQuantity: Number(text.target.value) })} 
+            Item Count:
+            <input ref={this.quantityInput} type="number" id="item-count" className='item-count'
+              onChange={text => this.setState({ itemQuantity: Number(text.target.value) })}
+              value={itemQuantity}
             />
           </span>
 

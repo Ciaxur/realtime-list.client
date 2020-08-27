@@ -3,11 +3,11 @@ import ItemInput from './ItemInput';
 
 // Expected Item Data
 export interface IItemData {
-  _id:          String;     // MongoDB Hash ID
-  image?:       String;     // Base64 Image
-  count:        Number;     // Quantity of Item
-  name:         String;     // Item's Name
-  description?: String;     // Item's Description Summary
+  _id:          string;     // MongoDB Hash ID
+  image?:       string;     // Base64 Image
+  count:        number;     // Quantity of Item
+  name:         string;     // Item's Name
+  description?: string;     // Item's Description Summary
 }
 
 

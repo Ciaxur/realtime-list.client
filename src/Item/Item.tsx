@@ -7,6 +7,7 @@ import { faTimesCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 interface IProp {
   item: IItemData;
   onDelete: (item: IItemData) => void;
+  onModify: (item: IItemData) => void;
 };
 interface IState { };
 
@@ -42,7 +43,7 @@ class Item extends React.Component<IProp, IState> {
           {/* ACTION: Buttons */}
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <FontAwesomeIcon style={{ cursor: 'pointer', fontSize: '1.2rem' }} icon={faTimesCircle} onClick={() => this.props.onDelete(this.props.item)} />
-            <FontAwesomeIcon style={{ cursor: 'pointer', fontSize: '1.2rem' }} icon={faEdit} />
+            <FontAwesomeIcon style={{ cursor: 'pointer', fontSize: '1.2rem' }} icon={faEdit} onClick={() => this.props.onModify(this.props.item)} />
           </div>
         </div>
 
