@@ -1,0 +1,56 @@
+/* Global Overrides */
+a, a:visited, a:hover, a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+h3 {
+  font-size: 32px;
+}
+
+/* Global Styles */
+.container {
+  background-color: #ecf0f1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: calc(10px + 2vmin);
+  color: #2c3e50;
+  text-align: center;
+  padding: 0.2em;
+}
+
+/* Main Applicaton Styles */
+.app-add-item-button {
+  margin-top: 10px;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.app-header * {
+  border: solid rgba(116, 185, 255, 0.2) 1px;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px;
+}
+
+.app-changelog {
+  display: flex;
+  flex-direction: column;
+}
+.app-changelog li {
+  text-align: left;
+  list-style-type: none;
+}

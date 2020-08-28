@@ -127,7 +127,7 @@ class ItemInput extends React.Component<IProp, IState> {
             onChange={text => this.setState({ itemName: text.target.value })}
             value={itemName}
           />
-          <input ref={this.descInput} type="text" id="item-description" className='item-input' placeholder='Summary'
+          <textarea id="item-description" className='item-input' placeholder='Summary'
             onChange={text => this.setState({ itemDesc: text.target.value })}
             value={itemDesc}
           />

@@ -1,18 +1,15 @@
 .item-container {
   background-color: transparent;
-  border: 0.15rem dashed #ff7675;
-  
+  border: 0.2rem dashed black;
   border-radius: 10px;
   width: 80vw;
-
   display: flex;
   justify-content: space-between;
-
   margin: 0.5rem;
   padding: 1.2rem;
 }
 
-.form-item-container { 
+.form-item-container {
   width: 200rem;
   align-items: center;
   display: flex;
@@ -40,6 +37,7 @@
   height: 1rem;
   text-align: center;
 }
+
 textarea {
   height: 5rem !important;
   resize: none;
@@ -54,7 +52,6 @@ textarea {
   width: 10rem;
   height: 2rem;
   margin: 1.2rem;
-  
   font-size: 21px;
 }
 

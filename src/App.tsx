@@ -1,10 +1,11 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
+  Link,
 } from "react-router-dom";
 import ReactLoading from 'react-loading';
 
@@ -72,6 +73,7 @@ class App extends React.Component<IProp, IState> {
           .then(res => res.data)
           .then(data => this.setState({ itemList: data }))
           .catch(err => {
+            this.setState({ itemList: [] });
             console.log('No List, ', err);
           });
       });
@@ -156,10 +158,19 @@ class App extends React.Component<IProp, IState> {
     const { itemList, item } = this.state;
     
     return (
-      <div className="container">
-
+      <div className='container'>
+        
         {/* ROUTER: Main Router */}
         <Router>
+          {/* HEADER: Links */}
+          <div className='app-header'>
+
+            <Link to='/' onClick={() => this.setState({ redirect: '/' })}>Home</Link>
+            <Link to='/changes'>New Changes</Link>
+            <Link to='/about'>About</Link>
+
+          </div>
+          
           {/* Programmable Redirect */}
           {this.state.redirect && <Redirect to={this.state.redirect} />}
           
@@ -180,7 +191,7 @@ class App extends React.Component<IProp, IState> {
               
               {/* DISPLAY: No List Data */}
               {itemList && !itemList.length && 
-                <h3 style={{ color: '#d35400' }}>No Items...</h3>
+                <strong>No Items...</strong>
               }
               
               {/* DISPLAY: List of Data */}
@@ -213,6 +224,47 @@ class App extends React.Component<IProp, IState> {
                 ? <ItemInput item={item} onSubmit={this.updateItem} />
                 : <h3>No Item Selected to Edit</h3>
               }
+            </Route>
+
+            <Route path='/changes'>
+              {/* Generated using markdown Text to HTML on CHANGELOG.md */}
+              <div className='app-changelog'>
+
+                <strong>Version 1.0.0 (Base Features)</strong>
+                <ul>
+                  <li>[x] Start the Project <span aria-label='rocket' role='img'>🚀</span></li>
+                  <li>[x] Add <code>material-ui</code></li>
+                  <li>[x] Add Server Link to the README.md File, likewise other way</li>
+                  <li>[x] Better Colors and Styles <strong>UX</strong>
+
+                    <ul>
+                      <li>Random Color Borders (<em>Store on Server per Creation</em>)</li>
+                    </ul>
+                  </li>
+                  <li>[x] <span aria-label='bug' role='img'>🐞</span> Fix <strong>Add Item</strong> Overlapping and not Staying on very Bottom</li>
+                </ul>
+
+              </div>
+
+            </Route>
+
+            <Route path='/about'>
+
+              <div>
+                <strong>About App</strong>
+                <p>
+                  Small application that tracks live Lists of Items so that
+                  everyone that is on the site/app can simultaneously observer
+                  changes.
+                </p>
+                <footer>Check out the Open Source Development on <a
+                  href='https://github.com/Ciaxur/realtime-list.client'
+                  style={{ color: '#74b9ff' }}
+                  target='_blank'>GitHub</a>
+                </footer>
+              </div>
+
+              
             </Route>
 
           </Switch>
