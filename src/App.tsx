@@ -57,14 +57,17 @@ class App extends React.Component<IProp, IState> {
   }
 
   componentDidMount() {
+    // Secure Request?
+    const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
+    
     // Connect Socket and Attach Listeners
-    this.setState({ socket: io(`wss://${config.SERVER_IP}`) }, () => {
+    this.setState({ socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`) }, () => {
       const { socket } = this.state;
 
       // SOCKET CONNECT
       socket?.on('connect', () => {
         // Fetch List
-        axios.get(`https://${config.SERVER_IP}/list`)
+        axios.get(`http${secure ? 's' : ''}://${config.SERVER_IP}/list`)
           .then(res => res.data)
           .then(data => this.setState({ itemList: data }))
           .catch(err => {

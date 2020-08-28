@@ -19,12 +19,11 @@ h3 {
   justify-content: flex-start;
   
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #2c3e50;
   text-align: center;
 }
 
 
 .app-add-item-button {
-  position: absolute;
-  bottom: 1vh;
+  margin-top: 10px;
 }

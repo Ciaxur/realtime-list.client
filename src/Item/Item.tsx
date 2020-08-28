@@ -15,10 +15,10 @@ class Item extends React.Component<IProp, IState> {
 
   render() {
     // Destructure Used Data
-    const { image, count, name, description } = this.props.item;
+    const { image, color, count, name, description } = this.props.item;
 
     return (
-      <div className="item-container">
+      <div className="item-container" style={{ borderColor: color || 'black' }}>
 
         {/* ITEM INFO */}
         <div className="item-info-container">

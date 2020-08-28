@@ -6,6 +6,7 @@ export interface IItemData {
   _id:          string;     // MongoDB Hash ID
   image?:       string;     // Base64 Image
   count:        number;     // Quantity of Item
+  color:        string;     // Randomly Assigned Color
   name:         string;     // Item's Name
   description?: string;     // Item's Description Summary
 }

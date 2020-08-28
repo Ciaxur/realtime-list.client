@@ -1,5 +1,7 @@
 .item-container {
-  background-color: #2980b9;
+  background-color: transparent;
+  border: 2px solid black;
+  
   border-radius: 10px;
   width: 80vw;
 
@@ -70,7 +72,7 @@
 }
 
 .item-info-count {
-  color: #d35400;
+  color: #2c3e50;
   font-size: 24px;
   align-self: center;
   margin: 0em 1em;
@@ -78,6 +80,7 @@
 
 .item-info-mute {
   font-size: large;
-  color: #95a5a6;
+  color: #2c3e50;
+  opacity: 0.6;
   margin-left: 1rem;
 }

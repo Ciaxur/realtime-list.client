@@ -6,6 +6,15 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '@material-ui/core';
 import './style.css';
 
+// Available Border Colors
+const AVAIL_CLRS = [
+  '#9b59b6', '#2ecc71', '#16a085', '#27ae60', 
+  '#2980b9', '#8e44ad', '#2c3e50', '#e67e22',
+  '#95a5a6', '#f39c12', '#0984e3', '#6c5ce7',
+  '#e84393', '#e17055', '#00b894', '#74b9ff',
+  '#2d3436',
+];
+
 
 interface IProp {
   onSubmit: (data: Partial<IItemData> | null) => void,
@@ -98,6 +107,7 @@ class ItemInput extends React.Component<IProp, IState> {
       _id: this.props.item?._id,
       name: itemName,
       count: itemQuantity,
+      color: AVAIL_CLRS[ Math.floor(Math.random() * AVAIL_CLRS.length) ],
       description: itemDesc,
     });
   }
@@ -122,7 +132,7 @@ class ItemInput extends React.Component<IProp, IState> {
             value={itemDesc}
           />
 
-          <span className='item-info-mute' style={{ color: 'white', marginTop: 2 }}>
+          <span className='item-info-mute' style={{ opacity: 1.0, marginTop: 2 }}>
             <strong><small>Item Count:</small></strong>
             <input ref={this.quantityInput} type="number" id="item-count" className='item-count'
               onChange={text => this.setState({ itemQuantity: Number(text.target.value) })}
