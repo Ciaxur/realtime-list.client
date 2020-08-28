@@ -7,4 +7,4 @@
 ### Version 1.1.0 (User Features)
 * [ ] Dark Mode
 * [ ] Cookies
-* [ ] Loading Indicator
+* [x] Loading Indicator

@@ -6,6 +6,7 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
+import ReactLoading from 'react-loading';
 
 // Styling Libraries
 import { Button } from '@material-ui/core';
@@ -28,7 +29,7 @@ import config from './config';
 interface IProp {};
 interface IState {
   socket: SocketIOClient.Socket | null;
-  itemList: IItemData[];
+  itemList: IItemData[] | null;
   redirect: string | null;
 
   isItemEdit: boolean;        // State of Editing an Item
@@ -42,7 +43,7 @@ class App extends React.Component<IProp, IState> {
     // Initialize State
     this.state = {
       socket: null,
-      itemList: [],
+      itemList: null,
       redirect: null,
 
       isItemEdit: false,
@@ -82,6 +83,8 @@ class App extends React.Component<IProp, IState> {
 
       // SOCKET: New Item Added
       socket?.on('new-item', (item: IItemData) => {
+        if(!this.state.itemList) return;
+        
         const itemList = this.state.itemList;
         itemList.push(item);
         this.setState({ itemList });
@@ -89,12 +92,16 @@ class App extends React.Component<IProp, IState> {
 
       // SOCKET: Item Removed
       socket?.on('remove-item', (item: IItemData) => {
+        if(!this.state.itemList) return;
+        
         const itemList = this.state.itemList.filter(val => val._id !== item._id);
         this.setState({ itemList });
       });
 
       // SOCKET: Item Updated
       socket?.on('update-item', (item: IItemData) => {
+        if(!this.state.itemList) return;
+
         // Update the new Item
         const itemList = this.state.itemList
           .map(val => val._id === item._id ? item : val);
@@ -159,13 +166,25 @@ class App extends React.Component<IProp, IState> {
           {/* SWITCH: Different Routes to Take */}
           <Switch>
             <Route exact path='/'>
+              {/* LOADING DATA */}
+              {itemList === null && 
+                <>
+                  <h4 style={{marginBottom: 10}}>Loading Data...</h4>
+                  <ReactLoading 
+                    type={'spinningBubbles'} 
+                    color={'#2c3e50'} 
+                    width={40} 
+                    height={40} />
+                </>
+              }
+              
               {/* DISPLAY: No List Data */}
-              {!itemList.length && 
+              {itemList && !itemList.length && 
                 <h3 style={{ color: '#d35400' }}>No Items...</h3>
               }
               
               {/* DISPLAY: List of Data */}
-              {itemList.map((val, index) =>
+              {itemList && itemList.map((val, index) =>
                 <Item 
                   key={index} 
                   item={val} 
@@ -175,12 +194,14 @@ class App extends React.Component<IProp, IState> {
               )}
 
               {/* Add Button */}
-              <div className='app-add-item-button'>
-                <Button 
-                  variant='contained'
-                  color='primary'
-                  onClick={() => this.setState({ redirect: '/add-item' })}>Add Item</Button>
-              </div>
+              {itemList !== null &&
+                <div className='app-add-item-button'>
+                  <Button 
+                    variant='contained'
+                    color='primary'
+                    onClick={() => this.setState({ redirect: '/add-item' })}>Add Item</Button>
+                </div>
+              }
             </Route>
 
             <Route path='/add-item'>
