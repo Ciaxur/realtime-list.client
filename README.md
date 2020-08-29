@@ -1,4 +1,4 @@
-# Real-Time Grocery List
+# Real-Time List Tracking
 > Real-Time List that uses Sockets to communicate with a centralized Server for consistent data on all Connected Clients
 > Can be used to track other Lists than a Grocery List
 
