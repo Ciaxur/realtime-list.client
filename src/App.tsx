@@ -269,6 +269,20 @@ class App extends React.Component<IProp, IState> {
               {/* Generated using markdown Text to HTML on CHANGELOG.md */}
               <div className='app-changelog'>
 
+                <strong>Version 1.1.0 (User Features)</strong>
+                <ul>
+                  <li>[ ] Dark Mode</li>
+                  <li>[ ] Cookies</li>
+                  <li>[x] Trash (Recently Deleted Items, sort by Date)</li>
+                  <li>[x] Loading Indicator</li>
+                  <li>[x] Routes
+                    <ul>
+                      <li>Home | Changelog | About</li>
+                      <li>Add robots.txt</li>
+                    </ul>
+                  </li>
+                </ul>
+
                 <strong>Version 1.0.0 (Base Features)</strong>
                 <ul>
                   <li>[x] Start the Project <span aria-label='rocket' role='img'>🚀</span></li>
