@@ -7,7 +7,7 @@
 ### Version 1.1.0 (User Features)
 * [ ] Dark Mode
 * [ ] Cookies
-* [ ] Trash (Recently Deleted Items, sort by Date)
+* [x] Trash (Recently Deleted Items, sort by Date)
 * [x] Loading Indicator
 * [x] Routes
   * Home | Changelog | About

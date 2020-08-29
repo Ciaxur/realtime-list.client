@@ -54,8 +54,10 @@ class App extends React.Component<IProp, IState> {
     // Bind Member Functions
     this.submitItemAdd = this.submitItemAdd.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+    this.trashItem = this.trashItem.bind(this);
     this.updateItem = this.updateItem.bind(this);
     this.modifyItem = this.modifyItem.bind(this);
+    this.restoreItem = this.restoreItem.bind(this);
   }
 
   componentDidMount() {
@@ -125,9 +127,23 @@ class App extends React.Component<IProp, IState> {
     this.setState({ redirect: '/' });
   }
 
-  // SERVER: Remove Item Listing from Server
+  // SERVER: Remove Item Listing from Server (Fully Removes Item)
   private deleteItem(item: IItemData) {
     this.state.socket?.emit('item-del', item);
+  }
+
+  // SERVER: Trash Item Listing from Server
+  private trashItem(item: IItemData) {
+    item.isDeleted = true;
+    item.dateDeleted = new Date(Date.now());
+    this.state.socket?.emit('item-update', item);
+  }
+
+  // SERVER: Restore Item from Server
+  private restoreItem(item: Partial<IItemData>) {
+    item.isDeleted = false;
+    item.dateDeleted = undefined;
+    this.state.socket?.emit('item-update', item);
   }
 
   // SERVER: Update Item Listing on Server
@@ -166,7 +182,7 @@ class App extends React.Component<IProp, IState> {
           <div className='app-header'>
 
             <Link to='/' onClick={() => this.setState({ redirect: '/' })}>Home</Link>
-            <Link to='/changes'>New Changes</Link>
+            <Link to='/trash'>Trash</Link>
             <Link to='/about'>About</Link>
 
           </div>
@@ -195,11 +211,11 @@ class App extends React.Component<IProp, IState> {
               }
               
               {/* DISPLAY: List of Data */}
-              {itemList && itemList.map((val, index) =>
-                <Item 
-                  key={index} 
-                  item={val} 
-                  onDelete={this.deleteItem}
+              {itemList && itemList.filter(val => !val.isDeleted).map((val, index) =>
+                <Item
+                  key={index}
+                  item={val}
+                  onTrash={this.trashItem}
                   onModify={this.modifyItem}
                 />
               )}
@@ -224,6 +240,29 @@ class App extends React.Component<IProp, IState> {
                 ? <ItemInput item={item} onSubmit={this.updateItem} />
                 : <h3>No Item Selected to Edit</h3>
               }
+            </Route>
+
+            <Route path='/trash'>
+
+              {/* DISPLAY: No List Data */}
+              {itemList && !itemList.filter(val => val.isDeleted).length && 
+                <strong>Nothing Trashed...</strong>
+              }
+              
+              {/* DISPLAY: List of Trashed Data */}
+              {itemList &&
+                itemList
+                  .filter(val => val.isDeleted)
+                  .sort((a, b) => Number(a.dateDeleted) - Number(b.dateDeleted))
+                  .map((val, index) =>
+                    <Item
+                      key={index}
+                      item={val}
+                      onDelete={this.deleteItem}
+                      onRestore={this.restoreItem}
+                    />
+                  )}
+              
             </Route>
 
             <Route path='/changes'>
@@ -257,11 +296,15 @@ class App extends React.Component<IProp, IState> {
                   everyone that is on the site/app can simultaneously observer
                   changes.
                 </p>
-                <footer>Check out the Open Source Development on <a
+                <p>Check out the Open Source Development on <a
                   href='https://github.com/Ciaxur/realtime-list.client'
                   style={{ color: '#74b9ff' }}
                   target='_blank'>GitHub</a>
-                </footer>
+                </p>
+                <p>
+                  Check out <Link to='/changes' style={{ color: '#74b9ff' }}>New Changes</Link> done to the
+                  app.
+                </p>
               </div>
 
               

@@ -2,12 +2,19 @@ import React from 'react';
 import './style.css';
 import { IItemData } from '.';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimesCircle,
+  faEdit,
+  faTrashAlt,
+  faUndo,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface IProp {
-  item: IItemData;
-  onDelete: (item: IItemData) => void;
-  onModify: (item: IItemData) => void;
+  item:       IItemData;
+  onDelete?:  (item: IItemData) => void;
+  onTrash?:   (item: IItemData) => void;
+  onModify?:  (item: IItemData) => void;
+  onRestore?: (item: IItemData) => void;
 };
 interface IState { };
 
@@ -16,6 +23,7 @@ class Item extends React.Component<IProp, IState> {
   render() {
     // Destructure Used Data
     const { image, color, count, name, description } = this.props.item;
+    const { onModify, onDelete, onRestore, onTrash } = this.props;
 
     return (
       <div className="item-container" style={{ borderColor: color || 'black' }}>
@@ -42,8 +50,32 @@ class Item extends React.Component<IProp, IState> {
 
           {/* ACTION: Buttons */}
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <FontAwesomeIcon style={{ cursor: 'pointer', fontSize: '1.2rem' }} icon={faTimesCircle} onClick={() => this.props.onDelete(this.props.item)} />
-            <FontAwesomeIcon style={{ cursor: 'pointer', fontSize: '1.2rem' }} icon={faEdit} onClick={() => this.props.onModify(this.props.item)} />
+            {(onTrash !== undefined || onDelete !== undefined) &&
+              <FontAwesomeIcon
+                style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                icon={onTrash ? faTrashAlt : faTimesCircle}
+                color={onTrash ? undefined : '#e74c3c'}
+                onClick={() => ((onTrash ? onTrash : onDelete) as any)(this.props.item)}
+              />
+            }
+
+            {/* Modify Only if Available */}
+            {onModify &&
+              <FontAwesomeIcon
+                style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                icon={faEdit}
+                onClick={() => onModify && onModify(this.props.item)}
+              />
+            }
+
+            {/* Restore Item */}
+            {onRestore &&
+              <FontAwesomeIcon
+                style={{ cursor: 'pointer', fontSize: '1.1rem', marginTop: 10 }}
+                icon={faUndo}
+                onClick={() => onRestore && onRestore(this.props.item)}
+              />
+            }
           </div>
         </div>
 
