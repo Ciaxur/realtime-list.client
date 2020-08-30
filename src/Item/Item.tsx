@@ -11,6 +11,7 @@ import {
 
 interface IProp {
   item:       IItemData;
+  darkMode?:  boolean;
   onDelete?:  (item: IItemData) => void;
   onTrash?:   (item: IItemData) => void;
   onModify?:  (item: IItemData) => void;
@@ -23,7 +24,8 @@ class Item extends React.Component<IProp, IState> {
   render() {
     // Destructure Used Data
     const { image, color, count, name, description } = this.props.item;
-    const { onModify, onDelete, onRestore, onTrash } = this.props;
+    const { onModify, onDelete, onRestore, onTrash, darkMode } = this.props;
+
 
     return (
       <div className="item-container" style={{ borderColor: color || 'black' }}>
@@ -36,7 +38,7 @@ class Item extends React.Component<IProp, IState> {
 
           <div className="item-info">
             <h4>{name}</h4>
-            <p className="item-info-mute">{description}</p>
+            <p className={`item-info-mute ${darkMode && 'dark-mode-mute'}`}>{description}</p>
           </div>
 
         </div>
@@ -44,8 +46,8 @@ class Item extends React.Component<IProp, IState> {
         {/* RIGHT SIDE DATA */}
         <div style={{ display: 'flex' }}>
           {/* ITEM COUNT */}
-          <div className="item-info-count">
-            <span>{count}</span>
+          <div className='item-info-count'>
+            <span className={darkMode ? 'dark-mode-mute' : ''}>{count}</span>
           </div>
 
           {/* ACTION: Buttons */}

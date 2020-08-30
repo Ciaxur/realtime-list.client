@@ -88,3 +88,7 @@ textarea {
   opacity: 0.5;
   margin-left: 1rem;
 }
+
+.dark-mode-mute {
+  color: #607D8B;
+}

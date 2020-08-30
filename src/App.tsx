@@ -11,6 +11,7 @@ import ReactLoading from 'react-loading';
 
 // Styling Libraries
 import { Button } from '@material-ui/core';
+import MaterialSwitch from '@material-ui/core/Switch'
 
 // Axios & Socket Library
 import io from 'socket.io-client';
@@ -35,6 +36,7 @@ interface IState {
 
   isItemEdit: boolean;        // State of Editing an Item
   item: IItemData | null;     // Item being Pointed to for Action
+  isDarkMode: boolean;        // Dark Mode State
 };
 
 class App extends React.Component<IProp, IState> {
@@ -49,6 +51,7 @@ class App extends React.Component<IProp, IState> {
 
       isItemEdit: false,
       item: null,
+      isDarkMode: false,
     };
 
     // Bind Member Functions
@@ -58,9 +61,18 @@ class App extends React.Component<IProp, IState> {
     this.updateItem = this.updateItem.bind(this);
     this.modifyItem = this.modifyItem.bind(this);
     this.restoreItem = this.restoreItem.bind(this);
+    this.toggleDarkMode = this.toggleDarkMode.bind(this);
   }
 
   componentDidMount() {
+    // Read in Cookies
+    const cookies = document.cookie.split('=');
+    cookies.forEach((val, index) => {
+      if (val === 'darkMode' && cookies[index + 1] !== undefined) {
+        this.setState({ isDarkMode: cookies[index + 1] === 'true' ? true : false });
+      }
+    });
+    
     // Secure Request?
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
     
@@ -169,12 +181,21 @@ class App extends React.Component<IProp, IState> {
       redirect: '/edit-item',
     });
   }
+
+  // Toggles Dark Mode Theme
+  private toggleDarkMode(state: boolean) {
+    // Save Dark Mode in a Cookie
+    const expiration = new Date( Date.now() + 1 * 24 * 60 * 60 * 1000 );
+    document.cookie = `darkMode=${state}; expires=${expiration.toUTCString()}; path=/`;
+    
+    this.setState({ isDarkMode: state });
+  }
   
   render() {
-    const { itemList, item } = this.state;
+    const { itemList, item, isDarkMode } = this.state;
     
     return (
-      <div className='container'>
+      <div className='container' style={isDarkMode ? { backgroundColor: '#2c3e50', color: '#ecf0f1' } : {}}>
         
         {/* ROUTER: Main Router */}
         <Router>
@@ -217,6 +238,7 @@ class App extends React.Component<IProp, IState> {
                   item={val}
                   onTrash={this.trashItem}
                   onModify={this.modifyItem}
+                  darkMode={isDarkMode}
                 />
               )}
 
@@ -232,12 +254,12 @@ class App extends React.Component<IProp, IState> {
             </Route>
 
             <Route path='/add-item'>
-              <ItemInput onSubmit={this.submitItemAdd} />
+              <ItemInput darkMode={isDarkMode} onSubmit={this.submitItemAdd} />
             </Route>
 
             <Route path='/edit-item'>
               { item && item._id
-                ? <ItemInput item={item} onSubmit={this.updateItem} />
+                ? <ItemInput darkMode={isDarkMode} item={item} onSubmit={this.updateItem} />
                 : <h3>No Item Selected to Edit</h3>
               }
             </Route>
@@ -260,6 +282,7 @@ class App extends React.Component<IProp, IState> {
                       item={val}
                       onDelete={this.deleteItem}
                       onRestore={this.restoreItem}
+                      darkMode={isDarkMode}
                     />
                   )}
               
@@ -271,8 +294,8 @@ class App extends React.Component<IProp, IState> {
 
                 <strong>Version 1.1.0 (User Features)</strong>
                 <ul>
-                  <li>[ ] Dark Mode</li>
-                  <li>[ ] Cookies</li>
+                  <li>[x] Dark Mode</li>
+                  <li>[x] Cookies</li>
                   <li>[x] Trash (Recently Deleted Items, sort by Date)</li>
                   <li>[x] Loading Indicator</li>
                   <li>[x] Routes
@@ -319,6 +342,13 @@ class App extends React.Component<IProp, IState> {
                   Check out <Link to='/changes' style={{ color: '#74b9ff' }}>New Changes</Link> done to the
                   app.
                 </p>
+
+                <small>Dark Mode 
+                  <MaterialSwitch 
+                    checked={isDarkMode}
+                    color='primary'
+                    onChange={state => this.toggleDarkMode(state.currentTarget.checked)} />
+                </small>
               </div>
 
               

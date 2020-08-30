@@ -18,6 +18,7 @@ const AVAIL_CLRS = [
 
 interface IProp {
   onSubmit: (data: Partial<IItemData> | null) => void,
+  darkMode?:  boolean;
   item?: IItemData,       // Item Passed down
 };
 interface IState {
@@ -114,7 +115,7 @@ class ItemInput extends React.Component<IProp, IState> {
   
   render() {
     const { itemDesc, itemQuantity, itemName } = this.state;
-    const { item } = this.props;
+    const { item, darkMode } = this.props;
     
     return (
       <div className='item-container'>
@@ -132,7 +133,7 @@ class ItemInput extends React.Component<IProp, IState> {
             value={itemDesc}
           />
 
-          <span className='item-info-mute' style={{ opacity: 1.0, marginTop: 2 }}>
+          <span className={`item-info-mute ${darkMode && 'dark-mode-mute'}`} style={{ opacity: 1.0, marginTop: 2 }}>
             <strong><small>Item Count:</small></strong>
             <input ref={this.quantityInput} type="number" id="item-count" className='item-count'
               onChange={text => this.setState({ itemQuantity: Number(text.target.value) })}
