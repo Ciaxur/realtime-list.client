@@ -227,7 +227,7 @@ class App extends React.Component<IProp, IState> {
               }
               
               {/* DISPLAY: No List Data */}
-              {itemList && !itemList.length && 
+              {itemList && !itemList.filter(item => !item.isDeleted).length && 
                 <strong>No Items...</strong>
               }
               
