@@ -4,9 +4,10 @@
 
 The Server Application of this project is on here [GitHub Repo](https://github.com/Ciaxur/realtime-list.server).
 
-<img align="center" width="45%" src="https://i.imgur.com/1JNtsuN.png" />
-<img align="center" width="45%" src="https://i.imgur.com/ib7xDfq.png" />
-
+<p float="left" align="center">
+  <img align="center" width="47%" src="https://i.imgur.com/1JNtsuN.png" />
+  <img align="center" width="47%" src="https://i.imgur.com/ib7xDfq.png" />
+</p>
 
 ## Build and Run 🚀
 ```sh
