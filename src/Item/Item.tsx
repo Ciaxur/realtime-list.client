@@ -12,6 +12,7 @@ import {
 interface IProp {
   item:       IItemData;
   darkMode?:  boolean;
+  showTrashDate?: boolean;
   onDelete?:  (item: IItemData) => void;
   onTrash?:   (item: IItemData) => void;
   onModify?:  (item: IItemData) => void;
@@ -21,10 +22,22 @@ interface IState { };
 
 class Item extends React.Component<IProp, IState> {
 
+  // Returns the Days since a Date Past
+  private getDaysSince(parsedDate: number): number {
+    return Math.floor((Date.now() - parsedDate) / (24 * 60 * 60 * 1000));
+  }
+
   render() {
     // Destructure Used Data
-    const { image, color, count, name, description } = this.props.item;
-    const { onModify, onDelete, onRestore, onTrash, darkMode } = this.props;
+    const { image, color, count, name, description, dateDeleted } = this.props.item;
+    const { 
+      onModify,
+      onDelete,
+      onRestore,
+      onTrash,
+      darkMode,
+      showTrashDate,
+    } = this.props;
 
 
     return (
@@ -39,6 +52,22 @@ class Item extends React.Component<IProp, IState> {
           <div className="item-info">
             <h4>{name}</h4>
             <p className={`item-info-mute ${darkMode && 'dark-mode-mute'}`}>{description}</p>
+
+            {showTrashDate &&
+              <p
+                className='item-info-mute'
+                style={{ 
+                  marginLeft: 0, 
+                  marginTop: '0.4em',
+                  color: '#e74c3c',
+                }}
+              >
+                Deleted: {dateDeleted
+                  ? this.getDaysSince(Date.parse(dateDeleted as any))
+                  : 0
+                } Days ago.
+              </p>
+            }
           </div>
 
         </div>

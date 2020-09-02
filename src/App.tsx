@@ -283,6 +283,7 @@ class App extends React.Component<IProp, IState> {
                       onDelete={this.deleteItem}
                       onRestore={this.restoreItem}
                       darkMode={isDarkMode}
+                      showTrashDate={true}
                     />
                   )}
               
