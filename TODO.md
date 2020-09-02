@@ -5,8 +5,8 @@
 * [ ] Animations
 
 ### Version 1.1.0 (User Features)
-* [ ] Dark Mode
-* [ ] Cookies
+* [x] Dark Mode
+* [x] Cookies
 * [x] Trash (Recently Deleted Items, sort by Date)
 * [x] Loading Indicator
 * [x] Routes

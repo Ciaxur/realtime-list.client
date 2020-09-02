@@ -2,9 +2,11 @@
 > Real-Time List that uses Sockets to communicate with a centralized Server for consistent data on all Connected Clients
 > Can be used to track other Lists than a Grocery List
 
-❗️ **This Project is NOT Production Ready!** ❗️
-
 The Server Application of this project is on here [GitHub Repo](https://github.com/Ciaxur/realtime-list.server).
+
+<img align="center" width="45%" src="https://i.imgur.com/1JNtsuN.png" />
+<img align="center" width="45%" src="https://i.imgur.com/ib7xDfq.png" />
+
 
 ## Build and Run 🚀
 ```sh
