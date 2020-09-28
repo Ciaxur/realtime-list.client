@@ -337,7 +337,7 @@ class App extends React.Component<IProp, IState> {
                 <p>Check out the Open Source Development on <a
                   href='https://github.com/Ciaxur/realtime-list.client'
                   style={{ color: '#74b9ff' }}
-                  target='_blank'>GitHub</a>
+                  target='_blank' rel='noopener noreferrer'>GitHub</a>
                 </p>
                 <p>
                   Check out <Link to='/changes' style={{ color: '#74b9ff' }}>New Changes</Link> done to the
