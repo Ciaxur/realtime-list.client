@@ -83,7 +83,7 @@ class App extends React.Component<IProp, IState> {
       // SOCKET CONNECT
       socket?.on('connect', () => {
         // Fetch List
-        axios.get(`http${secure ? 's' : ''}://${config.SERVER_IP}/list`)
+        axios.get(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/list`)
           .then(res => res.data)
           .then(data => this.setState({ itemList: data }))
           .catch(err => {
