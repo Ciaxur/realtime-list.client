@@ -39,7 +39,7 @@ class ItemInput extends React.Component<IProp, IState> {
 
     // Initial State
     this.state = {
-      itemQuantity: -1,
+      itemQuantity: 1,
       itemName: '',
       itemDesc: '',
       errorMessage: null,

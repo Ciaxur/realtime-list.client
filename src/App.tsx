@@ -9,6 +9,9 @@ import {
 } from "react-router-dom";
 import ReactLoading from 'react-loading';
 
+// Components
+import Authorzation from './Components/Authorization';
+
 // Styling Libraries
 import { Button } from '@material-ui/core';
 import MaterialSwitch from '@material-ui/core/Switch'
@@ -37,6 +40,9 @@ interface IState {
   isItemEdit: boolean;        // State of Editing an Item
   item: IItemData | null;     // Item being Pointed to for Action
   isDarkMode: boolean;        // Dark Mode State
+
+  authorized: boolean,        // State of Authorization
+  authorizeLoad: boolean,     // State of trying to authorize
 };
 
 class App extends React.Component<IProp, IState> {
@@ -52,6 +58,9 @@ class App extends React.Component<IProp, IState> {
       isItemEdit: false,
       item: null,
       isDarkMode: false,
+
+      authorized: false,
+      authorizeLoad: false,
     };
 
     // Bind Member Functions
@@ -77,13 +86,17 @@ class App extends React.Component<IProp, IState> {
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
     
     // Connect Socket and Attach Listeners
-    this.setState({ socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`) }, () => {
+    this.setState({ socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`, {
+      query: {
+        token: sessionStorage,  // Pass down token
+      },
+    }) }, () => {
       const { socket } = this.state;
 
       // SOCKET CONNECT
       socket?.on('connect', () => {
         // Fetch List
-        axios.get(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/list`)
+        axios.get(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/items/list`)
           .then(res => res.data)
           .then(data => this.setState({ itemList: data }))
           .catch(err => {
@@ -95,6 +108,9 @@ class App extends React.Component<IProp, IState> {
       // SOCKET: Error Messages
       socket?.on('error', (err: any) => {
         console.log('Socket Error Message:', err);
+        
+        // Attempted to authorize and failed
+        this.setState({ authorizeLoad: true, redirect: '/login' });
       });
 
       // SOCKET: New Item Added
@@ -355,6 +371,9 @@ class App extends React.Component<IProp, IState> {
               
             </Route>
 
+            <Route path='/login'>
+              <Authorzation onSuccess={() => this.setState({ authorized: true, redirect: '/' })} />
+            </Route>
           </Switch>
 
         </Router>

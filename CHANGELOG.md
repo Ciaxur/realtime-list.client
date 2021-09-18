@@ -1,6 +1,9 @@
 # Changelog
 In order to keep track of Version Changes, this file has all the **Finished Version Changes** throughout the Development of this Project.
 
+### Version 1.2.0 (User Authorization)
+* [x] Add Authorization
+* [x] Change Default Quantity to '1'
 
 ### Version 1.1.0 (User Features)
 * [x] Dark Mode
