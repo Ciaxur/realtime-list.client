@@ -81,22 +81,22 @@ class App extends React.Component<IProp, IState> {
         this.setState({ isDarkMode: cookies[index + 1] === 'true' ? true : false });
       }
     });
-    
+
+    this.triggerSocketConnect();
+  }
+
+  private triggerSocketConnect() {
     // Secure Request?
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
     
     // Connect Socket and Attach Listeners
-    this.setState({ socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`, {
-      query: {
-        token: sessionStorage,  // Pass down token
-      },
-    }) }, () => {
+    this.setState({ socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`) }, () => {
       const { socket } = this.state;
 
       // SOCKET CONNECT
       socket?.on('connect', () => {
         // Fetch List
-        axios.get(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/items/list`)
+        axios.get(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/items/list`, { withCredentials: true })
           .then(res => res.data)
           .then(data => this.setState({ itemList: data }))
           .catch(err => {
@@ -205,6 +205,11 @@ class App extends React.Component<IProp, IState> {
     document.cookie = `darkMode=${state}; expires=${expiration.toUTCString()}; path=/`;
     
     this.setState({ isDarkMode: state });
+  }
+
+  // Authorization Callback
+  private onAuthorized() {
+    this.setState({ authorized: true, redirect: '/' }, this.triggerSocketConnect);
   }
   
   render() {
@@ -372,7 +377,7 @@ class App extends React.Component<IProp, IState> {
             </Route>
 
             <Route path='/login'>
-              <Authorzation onSuccess={() => this.setState({ authorized: true, redirect: '/' })} />
+              <Authorzation onSuccess={() => this.onAuthorized()} />
             </Route>
           </Switch>
 

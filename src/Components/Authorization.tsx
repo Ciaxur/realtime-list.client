@@ -60,18 +60,21 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
 
     // Attempt to authorize
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
-    
-    // socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`
+
     axios.post(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/auth`, {
       email: emailInput,
       password: paswdInput,
-    })
+    }, { withCredentials: true })
       .then(() => this.props.onSuccess())
       .catch(err => {
+        const errResponse = err.response && (
+          (err.response.data.error && err.response.data.error[0]) || err.response.statusText);
+
         this.setState({
           emailError: true,
           paswdError: true,
-          errorString: err.response.data.error[0] || 'Unknown internal error',
+          errorString: errResponse
+            || 'Unknown internal error',
         })
       });
   };
