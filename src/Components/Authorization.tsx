@@ -47,10 +47,13 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
       emailInput, paswdInput,
     } = this.state;
 
+    // Extract & Clean Input data
+    const email = emailInput.trim();
+
     // Reset error state
     this.setState({ errorString: '', emailError: false, paswdError: false });
 
-    if (!emailInput.length || !paswdInput.length) {
+    if (!email.length || !paswdInput.length) {
       return this.setState({ 
         errorString: 'Please input credentials',
         emailError: true,
@@ -62,7 +65,7 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
 
     axios.post(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/auth`, {
-      email: emailInput,
+      email: email,
       password: paswdInput,
     }, { withCredentials: true })
       .then(() => this.props.onSuccess())
