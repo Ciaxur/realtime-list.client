@@ -103,6 +103,7 @@ class App extends React.Component<IProp, IState> {
             this.setState({ itemList: [] });
             console.log('No List, ', err);
           });
+          this.setState({ authorizeLoad: true, redirect: '/' });
       });
 
       // SOCKET: Error Messages
@@ -213,7 +214,7 @@ class App extends React.Component<IProp, IState> {
   }
   
   render() {
-    const { itemList, item, isDarkMode } = this.state;
+    const { itemList, item, isDarkMode, authorized } = this.state;
     
     return (
       <div className='container' style={isDarkMode ? { backgroundColor: '#2c3e50', color: '#ecf0f1' } : {}}>
@@ -226,6 +227,9 @@ class App extends React.Component<IProp, IState> {
             <Link to='/' onClick={() => this.setState({ redirect: '/' })}>Home</Link>
             <Link to='/trash'>Trash</Link>
             <Link to='/about'>About</Link>
+            {!authorized && (
+              <Link to='/login'>Login</Link>
+            )}
 
           </div>
           
@@ -273,7 +277,7 @@ class App extends React.Component<IProp, IState> {
                 </div>
               }
             </Route>
-
+            
             <Route path='/add-item'>
               <ItemInput darkMode={isDarkMode} onSubmit={this.submitItemAdd} />
             </Route>
@@ -377,7 +381,11 @@ class App extends React.Component<IProp, IState> {
             </Route>
 
             <Route path='/login'>
-              <Authorzation onSuccess={() => this.onAuthorized()} />
+              {
+                authorized
+                  ? <h3>Already logged in!</h3>
+                  : <Authorzation onSuccess={() => this.onAuthorized()} />
+              }
             </Route>
           </Switch>
 
