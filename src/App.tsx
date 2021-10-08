@@ -103,8 +103,11 @@ class App extends React.Component<IProp, IState> {
             this.setState({ itemList: [] });
             console.log('No List, ', err);
           });
-          this.setState({ authorizeLoad: true, redirect: '/' });
+        this.setState({ authorizeLoad: true, redirect: '/' });
       });
+
+      // SOCKET: Authorization Ack
+      socket?.on('authorized', () => this.setState({ authorized: true }));
 
       // SOCKET: Error Messages
       socket?.on('error', (err: any) => {
