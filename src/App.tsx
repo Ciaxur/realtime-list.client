@@ -303,7 +303,7 @@ class App extends React.Component<IProp, IState> {
               {itemList &&
                 itemList
                   .filter(val => val.isDeleted)
-                  .sort((a, b) => Number(a.dateDeleted) - Number(b.dateDeleted))
+                  .sort((a, b) => new Date(b.dateDeleted).getTime() - new Date(a.dateDeleted).getTime())
                   .map((val, index) =>
                     <Item
                       key={index}
@@ -320,6 +320,11 @@ class App extends React.Component<IProp, IState> {
             <Route path='/changes'>
               {/* Generated using markdown Text to HTML on CHANGELOG.md */}
               <div className='app-changelog'>
+              <strong>Version 1.1.1 (Minor Fixes)</strong>
+                <ul>
+                  <li>[x] Fix trash sorting by last trashed</li>
+                  <li>[x] Read-Only List. Auth can modify and add</li>
+                </ul>
 
                 <strong>Version 1.1.0 (User Features)</strong>
                 <ul>
