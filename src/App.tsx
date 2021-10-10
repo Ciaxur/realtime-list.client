@@ -87,7 +87,7 @@ class App extends React.Component<IProp, IState> {
 
   private triggerSocketConnect() {
     // Early return if already connected
-    if (!this.state.socket) return;
+    if (this.state.socket) return;
     
     // Secure Request?
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
