@@ -86,6 +86,9 @@ class App extends React.Component<IProp, IState> {
   }
 
   private triggerSocketConnect() {
+    // Early return if already connected
+    if (!this.state.socket) return;
+    
     // Secure Request?
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
     
@@ -106,6 +109,11 @@ class App extends React.Component<IProp, IState> {
         this.setState({ authorizeLoad: true, redirect: '/' });
       });
 
+      // SOCKET DISCONNECT
+      socket?.on('disconnect', () => {
+        this.setState({ socket: null });
+      });
+
       // SOCKET: Authorization Ack
       socket?.on('authorized', () => this.setState({ authorized: true }));
 
@@ -114,7 +122,7 @@ class App extends React.Component<IProp, IState> {
         console.log('Socket Error Message:', err);
         
         // Attempted to authorize and failed
-        this.setState({ authorizeLoad: true, redirect: '/login' });
+        this.setState({ authorizeLoad: true, redirect: '/login', socket: null });
       });
 
       // SOCKET: New Item Added
@@ -142,7 +150,7 @@ class App extends React.Component<IProp, IState> {
         const itemList = this.state.itemList
           .map(val => val._id === item._id ? item : val);
         this.setState({ itemList });
-      })
+      });
       
     });
   }
