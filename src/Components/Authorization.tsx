@@ -54,7 +54,7 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
     this.setState({ errorString: '', emailError: false, paswdError: false });
 
     if (!email.length || !paswdInput.length) {
-      return this.setState({ 
+      return this.setState({
         errorString: 'Please input credentials',
         emailError: true,
         paswdError: true,
@@ -78,7 +78,7 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
           paswdError: true,
           errorString: errResponse
             || 'Unknown internal error',
-        })
+        });
       });
   };
 
@@ -89,7 +89,7 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
           label="Email"
           variant="standard"
           error={this.state.emailError}
-          onChange={elt => this.setState({ emailInput: elt.target.value })} 
+          onChange={elt => this.setState({ emailInput: elt.target.value })}
         />
         <TextField
           label="Password"

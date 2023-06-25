@@ -2,7 +2,7 @@
 import React from 'react';
 import { IItemData } from '.';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@material-ui/core';
 import './style.css';
 
@@ -161,7 +161,7 @@ class ItemInput extends React.Component<IProp, IState> {
         </div>
         
       </div>
-    )
+    );
   }
 
 }

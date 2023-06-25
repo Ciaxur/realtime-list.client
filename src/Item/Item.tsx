@@ -30,7 +30,7 @@ class Item extends React.Component<IProp, IState> {
   render() {
     // Destructure Used Data
     const { image, color, count, name, description, dateDeleted } = this.props.item;
-    const { 
+    const {
       onModify,
       onDelete,
       onRestore,
@@ -46,7 +46,7 @@ class Item extends React.Component<IProp, IState> {
         {/* ITEM INFO */}
         <div className="item-info-container">
           {image &&
-            <img src={image as any} alt='item-avatar' />
+            <img src={image} alt='item-avatar' />
           }
 
           <div className="item-info">
@@ -56,14 +56,14 @@ class Item extends React.Component<IProp, IState> {
             {showTrashDate &&
               <p
                 className='item-info-mute'
-                style={{ 
-                  marginLeft: 0, 
+                style={{
+                  marginLeft: 0,
                   marginTop: '0.4em',
                   color: '#e74c3c',
                 }}
               >
                 Deleted: {dateDeleted
-                  ? this.getDaysSince(Date.parse(dateDeleted as any))
+                  ? this.getDaysSince(Date.parse(dateDeleted.toString()))
                   : 0
                 } Days ago.
               </p>
@@ -86,7 +86,7 @@ class Item extends React.Component<IProp, IState> {
                 style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                 icon={onTrash ? faTrashAlt : faTimesCircle}
                 color={onTrash ? undefined : '#e74c3c'}
-                onClick={() => ((onTrash ? onTrash : onDelete) as any)(this.props.item)}
+                onClick={() => (onTrash ? onTrash : onDelete as any)(this.props.item)}
               />
             }
 

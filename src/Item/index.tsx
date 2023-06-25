@@ -20,5 +20,5 @@ export interface IItemData {
 
 export { 
   Item, 
-  ItemInput
+  ItemInput,
 };
