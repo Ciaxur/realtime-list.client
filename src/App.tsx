@@ -69,16 +69,18 @@ class App extends React.Component<IProp, IState> {
   componentDidMount() {
     // Parse client cookies.
     const cookies = document.cookie.split(';');
-    cookies.forEach(entry => {
-      const cookie = entry.split('=');
-      if (cookie.length != 2) return;
-      const key = cookie[0].trim();
-      const val = cookie[1].trim();
+    if (cookies) {
+      cookies.forEach(entry => {
+        const cookie = entry.split('=');
+        if (cookie.length != 2) return;
+        const key = cookie[0].trim();
+        const val = cookie[1].trim();
 
-      if (key === 'darkMode') {
-        this.setState({ isDarkMode: val === 'true' ? true : false });
-      }
-    });
+        if (key === 'darkMode') {
+          this.setState({ isDarkMode: val === 'true' ? true : false });
+        }
+      });
+    }
 
     this.triggerSocketConnect();
   }
