@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
   Link,
+  Navigate,
 } from 'react-router-dom';
 
 // Components
@@ -25,19 +26,17 @@ import {
 import config from './config';
 
 // Routes
-import { Home } from './Routes/Home';
-import { Trash } from './Routes/Trash';
-import { ChangeLog } from './Routes/Changelog';
-import { About } from './Routes/About';
+import Home from './Routes/Home';
+import Trash from './Routes/Trash';
+import ChangeLog from './Routes/Changelog';
+import About from './Routes/About';
 
 
 interface IProp {};
 interface IState {
   socket: SocketIOClient.Socket | null;
   itemList: IItemData[] | null;
-  redirect: string | null;
 
-  isItemEdit: boolean;        // State of Editing an Item
   item: IItemData | null;     // Item being Pointed to for Action
   isDarkMode: boolean;        // Dark Mode State
 
@@ -53,9 +52,7 @@ class App extends React.Component<IProp, IState> {
     this.state = {
       socket: null,
       itemList: null,
-      redirect: null,
 
-      isItemEdit: false,
       item: null,
       isDarkMode: false,
 
@@ -70,11 +67,16 @@ class App extends React.Component<IProp, IState> {
   }
 
   componentDidMount() {
-    // Read in Cookies
-    const cookies = document.cookie.split('=');
-    cookies.forEach((val, index) => {
-      if (val === 'darkMode' && cookies[index + 1] !== undefined) {
-        this.setState({ isDarkMode: cookies[index + 1] === 'true' ? true : false });
+    // Parse client cookies.
+    const cookies = document.cookie.split(';');
+    cookies.forEach(entry => {
+      const cookie = entry.split('=');
+      if (cookie.length != 2) return;
+      const key = cookie[0].trim();
+      const val = cookie[1].trim();
+
+      if (key === 'darkMode') {
+        this.setState({ isDarkMode: val === 'true' ? true : false });
       }
     });
 
@@ -89,7 +91,12 @@ class App extends React.Component<IProp, IState> {
     const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
 
     // Connect Socket and Attach Listeners
-    this.setState({ socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`) }, () => {
+    this.setState({ socket: io(`ws${secure ? 's' : ''}://${config.SERVER_IP}`, {
+      // Send cookies through after authenticating with the server.
+      auth: (cb: (data: object) => void) => cb({
+        cookies: document.cookie,
+      }),
+    }) }, () => {
       const { socket } = this.state;
 
       // SOCKET CONNECT
@@ -102,7 +109,7 @@ class App extends React.Component<IProp, IState> {
             this.setState({ itemList: [] });
             console.log('No List, ', err);
           });
-        this.setState({ authorizeLoad: true, redirect: '/' });
+        this.setState({ authorizeLoad: true });
       });
 
       // SOCKET DISCONNECT
@@ -118,7 +125,7 @@ class App extends React.Component<IProp, IState> {
         console.log('Socket Error Message:', err);
 
         // Attempted to authorize and failed
-        this.setState({ authorizeLoad: true, redirect: '/login', socket: null });
+        this.setState({ authorizeLoad: true });
       });
 
       // SOCKET: New Item Added
@@ -157,9 +164,6 @@ class App extends React.Component<IProp, IState> {
       // Emit to Socket to Add to DB
       this.state.socket?.emit('item-add', item);
     }
-
-    // Go Home & Update Data
-    this.setState({ redirect: '/' });
   }
 
 
@@ -169,25 +173,21 @@ class App extends React.Component<IProp, IState> {
     this.state.socket?.emit('item-update', item);
 
     // Redirect back to Home & Modify State
-    this.setState({
-      item: null,
-      isItemEdit: false,
-      redirect: '/',
-    });
+    this.setState({ item: null });
   }
 
   // Toggles Dark Mode Theme
   private toggleDarkMode(state: boolean) {
     // Save Dark Mode in a Cookie
     const expiration = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
-    document.cookie = `darkMode=${state}; expires=${expiration.toUTCString()}; path=/`;
+    document.cookie = `darkMode=${state}; expires=${expiration.toUTCString()}; path=/; secure=true`;
 
     this.setState({ isDarkMode: state });
   }
 
   // Authorization Callback
   private onAuthorized() {
-    this.setState({ authorized: true, redirect: '/' }, this.triggerSocketConnect);
+    this.setState({ authorized: true }, this.triggerSocketConnect);
   }
 
   render() {
@@ -200,24 +200,22 @@ class App extends React.Component<IProp, IState> {
         <Router>
           {/* HEADER: Links */}
           <div className='app-header'>
-
-            <Link to='/' onClick={() => this.setState({ redirect: '/' })}>Home</Link>
+            <Link to='/'>Home</Link>
             <Link to='/trash'>Trash</Link>
             <Link to='/about'>About</Link>
             {!authorized && (
               <Link to='/login'>Login</Link>
             )}
-
           </div>
 
           {/* Routes: Different Routes to Take */}
           <Routes>
-
-          <Route path='/' element={
+            <Route path='/' element={
               <Home
                 itemList={itemList}
                 socket={this.state.socket}
                 isDarkMode={isDarkMode}
+                onItemSelected={item => this.setState({ item })}
               />
             }/>
 
@@ -250,7 +248,7 @@ class App extends React.Component<IProp, IState> {
               <>
                 {
                   authorized
-                    ? <h3>Already logged in!</h3>
+                    ? <Navigate to='/' />
                     : <Authorzation onSuccess={() => this.onAuthorized()} />
                 }
               </>

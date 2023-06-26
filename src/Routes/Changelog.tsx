@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function ChangeLog() {
+export default function ChangeLog() {
   return (
     <>
       {/* Generated using markdown Text to HTML on CHANGELOG.md */}

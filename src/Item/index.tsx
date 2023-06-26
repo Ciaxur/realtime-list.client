@@ -18,7 +18,7 @@ export interface IItemData {
 }
 
 
-export { 
-  Item, 
+export {
+  Item,
   ItemInput,
 };

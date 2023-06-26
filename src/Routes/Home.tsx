@@ -3,21 +3,30 @@ import ReactLoading from 'react-loading';
 
 // Styling Libraries
 import { Button } from '@material-ui/core';
+import {
+  Link,
+  NavigateFunction,
+} from 'react-router-dom';
 
 // Component imports.
 import {
   Item,
   IItemData,
 } from '../Item';
+import { withNavigate } from '../HOC/Navigation';
 
 interface IProp {
-  socket: SocketIOClient.Socket | null;
-  itemList: IItemData[] | null;
-  isDarkMode: boolean;
+  socket:         SocketIOClient.Socket | null;
+  itemList:       IItemData[] | null;
+  isDarkMode:     boolean;
+  navigate?:      NavigateFunction;
+
+  // Callbacks.
+  onItemSelected: (item: IItemData) => void;
 };
 interface IState {};
 
-export class Home extends React.Component<IProp, IState> {
+class Home extends React.Component<IProp, IState> {
   constructor(props: IProp) {
     super(props);
 
@@ -25,7 +34,7 @@ export class Home extends React.Component<IProp, IState> {
 
     // Bind Member Functions
     this.trashItem = this.trashItem.bind(this);
-    this.modifyItem = this.modifyItem.bind(this);
+    this.editItem = this.editItem.bind(this);
   }
 
   // SERVER: Trash Item Listing from Server
@@ -35,16 +44,12 @@ export class Home extends React.Component<IProp, IState> {
     this.props.socket?.emit('item-update', item);
   }
 
-  // Sets up Modifying an Item
-  private modifyItem(item: IItemData) {
-    // Setup the State for Editing the Item
-    this.setState({
-      item,
-      isItemEdit: true,
-      redirect: '/edit-item',
-    });
+  // Selects an item to modify.
+  private editItem(item: IItemData) {
+    this.props.onItemSelected(item);
+    if (this.props.navigate)
+      this.props.navigate('/edit-item');
   }
-
 
   render() {
     const {
@@ -77,7 +82,7 @@ export class Home extends React.Component<IProp, IState> {
             key={index}
             item={val}
             onTrash={this.trashItem}
-            onModify={this.modifyItem}
+            onModify={this.editItem}
             darkMode={isDarkMode}
           />,
         )}
@@ -85,13 +90,14 @@ export class Home extends React.Component<IProp, IState> {
         {/* Add Button */}
         {itemList !== null &&
           <div className='app-add-item-button'>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={() => this.setState({ redirect: '/add-item' })}>Add Item</Button>
+            <Link to='/add-item'>
+              <Button variant='contained' color='primary'>Add Item</Button>
+            </Link>
           </div>
         }
       </>
     );
   }
 }
+
+export default withNavigate(Home);

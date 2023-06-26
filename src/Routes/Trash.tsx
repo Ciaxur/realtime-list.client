@@ -13,7 +13,7 @@ interface IProp {
 };
 interface IState {};
 
-export class Trash extends React.Component<IProp, IState> {
+export default class Trash extends React.Component<IProp, IState> {
   constructor(props: IProp) {
     super(props);
 

@@ -10,7 +10,7 @@ interface IProp {
 }
 interface IState {};
 
-export class About extends React.Component<IProp, IState> {
+export default class About extends React.Component<IProp, IState> {
   constructor(props: IProp) {
     super(props);
 
