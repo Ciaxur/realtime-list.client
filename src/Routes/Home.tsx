@@ -2,7 +2,7 @@ import React from 'react';
 import ReactLoading from 'react-loading';
 
 // Styling Libraries
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import {
   Link,
   NavigateFunction,

@@ -30,6 +30,7 @@ import Home from './Routes/Home';
 import Trash from './Routes/Trash';
 import ChangeLog from './Routes/Changelog';
 import About from './Routes/About';
+import NewAccount from './Routes/NewAccount';
 
 
 interface IProp {};
@@ -64,6 +65,7 @@ class App extends React.Component<IProp, IState> {
     this.submitItemAdd = this.submitItemAdd.bind(this);
     this.updateItem = this.updateItem.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   componentDidMount() {
@@ -192,6 +194,16 @@ class App extends React.Component<IProp, IState> {
     this.setState({ authorized: true }, this.triggerSocketConnect);
   }
 
+  // Signs the user out.
+  private signOut() {
+    const httpProtocol = process.env.REACT_APP_UNSECURE ? 'http' : 'https';
+    axios.post(`${httpProtocol}://${config.SERVER_IP}/v1/auth/logoff`, {}, { withCredentials: true })
+      .then(() => {
+        this.setState({ authorized: false });
+      })
+      .catch(err => console.log(err));
+  }
+
   render() {
     const { itemList, item, isDarkMode, authorized } = this.state;
 
@@ -205,9 +217,11 @@ class App extends React.Component<IProp, IState> {
             <Link to='/'>Home</Link>
             <Link to='/trash'>Trash</Link>
             <Link to='/about'>About</Link>
-            {!authorized && (
-              <Link to='/login'>Login</Link>
-            )}
+            {
+              authorized
+              ? <Link to='/' onClick={this.signOut}>Sign out</Link>
+              : <Link to='/login'>Login</Link>
+            }
           </div>
 
           {/* Routes: Different Routes to Take */}
@@ -252,6 +266,16 @@ class App extends React.Component<IProp, IState> {
                   authorized
                     ? <Navigate to='/' />
                     : <Authorzation onSuccess={() => this.onAuthorized()} />
+                }
+              </>
+            }/>
+
+            <Route path='/register' element={
+              <>
+                {
+                  authorized
+                    ? <Navigate to='/' />
+                    : <NewAccount />
                 }
               </>
             }/>

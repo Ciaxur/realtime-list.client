@@ -4,7 +4,7 @@ import { NavigateFunction } from 'react-router-dom';
 import { IItemData } from '.';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import './style.css';
 import { Link } from 'react-router-dom';
 

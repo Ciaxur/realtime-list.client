@@ -1,17 +1,20 @@
 import React from 'react';
+import { NavigateFunction } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Button, TextField,
-} from '@material-ui/core';
+  Button, Link, TextField,
+} from '@mui/material';
+import { IUserSchema } from '../Interfaces';
 
 // Import Configuration
 import config from '../config';
+import { withNavigate } from '../HOC/Navigation';
 
 interface IProp {
   onSuccess: () => void,
+  navigate?: NavigateFunction;
 }
 interface IState {
-  open: boolean,
   emailInput: string,
   paswdInput: string,
 
@@ -20,12 +23,13 @@ interface IState {
   errorString: string,
 }
 
-export default class AuthorzationModel extends React.Component<IProp, IState> {
+class AuthorzationModel extends React.Component<IProp, IState> {
+  private emailInputRef: React.RefObject<HTMLDivElement>;
+
   constructor(props: IProp) {
     super(props);
 
     this.state = {
-      open: false,
       emailInput: '',
       paswdInput: '',
 
@@ -34,15 +38,38 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
       errorString: '',
     };
 
+    // References.
+    this.emailInputRef = React.createRef();
+
     // Bind methods
-    this.handleClose = this.handleClose.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
     this.authorize = this.authorize.bind(this);
+    this.handleEnterKey = this.handleEnterKey.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
   }
 
-  handleClose = () => this.setState({ open: false });
-  handleOpen = () => this.setState({ open: true });
-  authorize = () => {
+  componentDidMount(): void {
+    this.emailInputRef.current?.focus();
+  }
+
+  /**
+   * Event handler which invokes authorizing the user upon clicking the Enter key.
+   * @param event Triggered keyboard event.
+   */
+  private handleEnterKey(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key == 'Enter') {
+      this.authorize();
+    }
+  }
+
+  /**
+   * Handles routing the user to the register route.
+   */
+  private handleRegister = () => this.props.navigate && this.props.navigate('/register');
+
+  /**
+   * Authorize the user given the valid inputs.
+   */
+  private authorize = () => {
     const {
       emailInput, paswdInput,
     } = this.state;
@@ -62,12 +89,12 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
     }
 
     // Attempt to authorize
-    const secure = process.env.REACT_APP_UNSECURE ? false : true; // Defaulted to True
+    const httpProtocol = process.env.REACT_APP_UNSECURE ? 'http' : 'https';
 
-    axios.post(`http${secure ? 's' : ''}://${config.SERVER_IP}/v1/auth`, {
+    axios.post(`${httpProtocol}://${config.SERVER_IP}/v1/auth`, {
       email: email,
       password: paswdInput,
-    }, { withCredentials: true })
+    } as IUserSchema, { withCredentials: true })
       .then(() => this.props.onSuccess())
       .catch(err => {
         const errResponse = err.response && (
@@ -89,6 +116,8 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
           label="Email"
           variant="standard"
           error={this.state.emailError}
+          onKeyDown={this.handleEnterKey}
+          inputRef={this.emailInputRef}
           onChange={elt => this.setState({ emailInput: elt.target.value })}
         />
         <TextField
@@ -97,10 +126,23 @@ export default class AuthorzationModel extends React.Component<IProp, IState> {
           variant="standard"
           error={this.state.paswdError}
           helperText={this.state.errorString}
+          onKeyDown={this.handleEnterKey}
           onChange={elt => this.setState({ paswdInput: elt.target.value })} />
-        <Button style={{ margin: 10 }} variant='contained' onClick={() => this.authorize()}>Login</Button>
 
+        <Link
+          style={{
+            paddingTop: '5px',
+          }}
+          href='#'
+          onClick={this.handleRegister}
+          variant='overline'>Create Account</Link>
+        <Button
+          style={{ margin: 10 }}
+          variant='contained'
+          onClick={() => this.authorize()}>Login</Button>
       </div>
     );
   }
 };
+
+export default withNavigate(AuthorzationModel);

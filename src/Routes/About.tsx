@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 // Styling Libraries
-import MaterialSwitch from '@material-ui/core/Switch';
+import MaterialSwitch from '@mui/material/Switch';
 interface IProp {
   isDarkMode: boolean;
   toggleDarkMode: (state: boolean) => void;
